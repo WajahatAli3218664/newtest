@@ -97,7 +97,7 @@ class PublicHome extends StatelessWidget {
                         horizontal: isDesktop ? 60 : 20,
                         vertical: isDesktop ? 80 : 40,
                       ),
-                      child: isDesktop ? _buildDesktopHero() : _buildMobileHero(),
+                      child: isDesktop ? _buildDesktopHero(context) : _buildMobileHero(context),
                     ),
 
                     // Services Section
@@ -302,7 +302,7 @@ class PublicHome extends StatelessWidget {
     );
   }
 
-  Widget _buildDesktopHero() {
+  Widget _buildDesktopHero(BuildContext context) {
     return Row(
       children: [
         Expanded(
@@ -428,7 +428,7 @@ class PublicHome extends StatelessWidget {
     );
   }
 
-  Widget _buildMobileHero() {
+  Widget _buildMobileHero(BuildContext context) {
     return Column(
       children: [
         const Text(
