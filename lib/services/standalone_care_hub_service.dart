@@ -1516,16 +1516,42 @@ class StandaloneCareHubService {
         'contactNumber': pharmacyUser['phoneNumber'],
         'isVerified': true,
       });
-      for (var m = 0; m < 4; m++) {
+      // Common Pakistani medicines
+      final medicinesList = [
+        {'name': 'Panadol', 'category': 'Pain Relief', 'price': 5, 'company': 'GSK'},
+        {'name': 'Panadol Extra', 'category': 'Pain Relief', 'price': 8, 'company': 'GSK'},
+        {'name': 'Brufen', 'category': 'Pain Relief', 'price': 10, 'company': 'Abbott'},
+        {'name': 'Disprin', 'category': 'Pain Relief', 'price': 3, 'company': 'Reckitt'},
+        {'name': 'Ponstan', 'category': 'Pain Relief', 'price': 12, 'company': 'Pfizer'},
+        {'name': 'Calpol Syrup', 'category': 'Pain Relief', 'price': 120, 'company': 'GSK'},
+        {'name': 'Augmentin', 'category': 'Antibiotics', 'price': 250, 'company': 'GSK'},
+        {'name': 'Amoxil', 'category': 'Antibiotics', 'price': 150, 'company': 'GSK'},
+        {'name': 'Flagyl', 'category': 'Antibiotics', 'price': 180, 'company': 'Sanofi'},
+        {'name': 'Ciproxin', 'category': 'Antibiotics', 'price': 200, 'company': 'Bayer'},
+        {'name': 'Avil', 'category': 'Allergy', 'price': 80, 'company': 'Sanofi'},
+        {'name': 'Cetrizine', 'category': 'Allergy', 'price': 50, 'company': 'Generic'},
+        {'name': 'Telfast', 'category': 'Allergy', 'price': 120, 'company': 'Sanofi'},
+        {'name': 'Multivitamin', 'category': 'Vitamins', 'price': 200, 'company': 'Generic'},
+        {'name': 'Vitamin D3', 'category': 'Vitamins', 'price': 150, 'company': 'Generic'},
+        {'name': 'Calcium Tablets', 'category': 'Vitamins', 'price': 180, 'company': 'Generic'},
+        {'name': 'Gaviscon', 'category': 'Digestive', 'price': 250, 'company': 'Reckitt'},
+        {'name': 'Motilium', 'category': 'Digestive', 'price': 180, 'company': 'Janssen'},
+        {'name': 'Risek', 'category': 'Digestive', 'price': 220, 'company': 'Getz'},
+        {'name': 'Dettol Antiseptic', 'category': 'First Aid', 'price': 300, 'company': 'Reckitt'},
+      ];
+
+      for (var m = 0; m < medicinesList.length; m++) {
+        final med = medicinesList[m];
         medicines.add({
           '_id': 'medicine-${i + 1}-$m',
           'pharmacyId': 'pharmacy-${i + 1}',
-          'productName': ['Paracetamol', 'Augmentin', 'Vitamin D', 'Metformin'][m],
-          'category': ['Pain Relief', 'Antibiotics', 'Supplements', 'Diabetes'][m],
-          'quantity': 20 + (i * 5) + m,
-          'price': 250 + (m * 150),
-          'description': 'Seeded medicine for workflow testing',
-          'expiry': now.add(Duration(days: 120 + (m * 60))).toIso8601String(),
+          'productName': med['name'],
+          'category': med['category'],
+          'companyName': med['company'],
+          'quantity': 50 + (i * 10) + (m * 2),
+          'price': med['price'],
+          'description': 'High quality ${med['name']} from ${med['company']}',
+          'expiry': now.add(Duration(days: 180 + (m * 30))).toIso8601String(),
           'lowStockThreshold': 25,
         });
       }
