@@ -135,10 +135,9 @@ class _AppState extends ConsumerState<App> {
     setState(() {
       if (auth.isLoggedIn && auth.token != null) {
         content = const TabsScreen();
-      } else if (auth.userWalkthrough) {
-        content = LoginScreen();
       } else {
-        content = const Walkthrough();
+        // Skip walkthrough, go directly to role selection
+        content = const SelectUserType();
       }
     });
   }  
