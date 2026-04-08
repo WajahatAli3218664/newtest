@@ -21,21 +21,49 @@ class SelectUserType extends ConsumerStatefulWidget {
 
 class _SelectUserTypeState extends ConsumerState<SelectUserType> {
   final List<Map<String, dynamic>> userTypes = [
+  {
+    "id": 1,
+    "title": "I am a Patient",
+    "description": "The easy way to reach your Doctor face-to-face.",
+    "role": "patient",
+    "image":ImagePaths.userType1,
+  },
+  {
+    "id": 2,
+    "title": "I am a Doctor",
+    "description": "The easy way to reach your Patients face-to-face.",
+    "role": "doctor",
+    "image": ImagePaths.userType2,
+  },
+  {
+    "id": 4,
+    "title": "I am a Lab Technician",
+    "description": "The easy way to reach your Tests/Reports face-to-face.",
+    "role": "lab_technician",
+    "image":  ImagePaths.userType4,
+  },
+  {
+    "id": 3,
+    "title": "I am a Pharmacist",
+    "description": "The easy way to reach your Medicine face-to-face.",
+    "role": "pharmacist",
+    "image": ImagePaths.userType3,
+  },
     {
-      "id": 1,
-      "title": "I am a Patient",
-      "description": "Consult doctors, access prescriptions and manage your health in one secure place.",
-      "role": "patient",
-      "image": ImagePaths.userType1,
-    },
-    {
-      "id": 2,
-      "title": "I am a Doctor",
-      "description": "Manage patients, consultations and digital prescriptions with a clinical workflow.",
-      "role": "doctor",
-      "image": ImagePaths.userType2,
-    },
-  ];
+    "id": 5,
+    "title": "I am an Instructor",
+    "description": "The easy way to manage and guide your students.",
+    "role": "instructor",
+    "image": ImagePaths.userType5,
+  },
+  {
+    "id": 6,
+    "title": "I am a Student",
+    "description": "The easy way to learn and connect with instructors.",
+    "role": "student",
+    "image": ImagePaths.userType6,
+  },
+];
 
 int? selected_id;
 
