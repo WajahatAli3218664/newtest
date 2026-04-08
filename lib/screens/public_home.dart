@@ -345,7 +345,11 @@ class PublicHome extends StatelessWidget {
                   SizedBox(
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const SelectUserType()),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryColor,
                         padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -369,7 +373,9 @@ class PublicHome extends StatelessWidget {
                   SizedBox(
                     height: 56,
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        // Scroll to services section
+                      },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: AppColors.primaryColor, width: 2),
                         padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -452,7 +458,11 @@ class PublicHome extends StatelessWidget {
           width: double.infinity,
           height: 56,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SelectUserType()),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryColor,
               shape: RoundedRectangleBorder(
