@@ -122,8 +122,11 @@ class _AppState extends ConsumerState<App> {
   }
 
   void splash() async {
-    // Load data without delay - web splash screen already shows while loading
-    await loadData();
+    // Load data and show splash for minimum 1.5 seconds
+    final dataFuture = loadData();
+    final delayFuture = Future.delayed(const Duration(milliseconds: 1500));
+
+    await Future.wait([dataFuture, delayFuture]);
 
     if (!mounted) return;
 
