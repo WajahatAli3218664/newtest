@@ -122,14 +122,13 @@ class _AppState extends ConsumerState<App> {
   }
 
   void splash() async {
-    // Wait for data loading and splash delay
+    // Load data without delay - web splash screen already shows while loading
     await loadData();
-    await Future.delayed(const Duration(seconds: 3));
 
     if (!mounted) return;
 
     final auth = ref.read(authProvider);
-    
+
     setState(() {
       if (auth.isLoggedIn && auth.token != null) {
         content = const TabsScreen();
