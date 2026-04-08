@@ -72,82 +72,58 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> {
-  Widget content = SplashScreen();
+  Widget content = const PublicHome();
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    splash();
+    _checkAuth();
   }
 
-  Future<void> loadData() async {
+  Future<void> _checkAuth() async {
     try {
-      print("🔄 Starting loadData...");
-      final userWalkthrough = await SharedPref().getUserWalkthrough();
-      print("✅ Got userWalkthrough: $userWalkthrough");
-      ref.read(authProvider.notifier).setUserWalkthrough(userWalkthrough ?? false);
-
-      print("$userWalkthrough ===========>");
-
       final token = await SharedPref().getToken();
-      print("🔑 Loaded token from cache: ${token != null ? '${token.substring(0, 20)}...' : 'null'}");
 
       if (token != null && token.isNotEmpty) {
         ref.read(authProvider.notifier).setUserToken(token);
 
         final userRole = await SharedPref().getUserRole();
-        print("👤 Loaded role from cache: $userRole");
-
         if (userRole != null) {
           ref.read(authProvider.notifier).setUserRole(userRole);
         }
 
         final userDataMap = await SharedPref().getUserData();
         if (userDataMap != null) {
-          print("📋 Loaded user data from cache: ${userDataMap.email} - ${userDataMap.role}");
           ref.read(authProvider.notifier).setUser(userDataMap);
         }
+
+        if (mounted) {
+          setState(() {
+            content = const TabsScreen();
+            _isLoading = false;
+          });
+        }
       } else {
-        print("⚠️ No token found in cache, user needs to login");
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
-      print("✅ loadData completed successfully");
-    } catch (e, stackTrace) {
-      print("❌ Error loading data: $e");
-      print("Stack trace: $stackTrace");
-      // Clear any partial state on error
-      try {
-        ref.read(authProvider.notifier).setUserLogout();
-      } catch (e2) {
-        print("❌ Error during logout: $e2");
+    } catch (e) {
+      print("❌ Error loading auth: $e");
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
-  }
-
-  void splash() async {
-    // Load data and show splash for minimum 1.5 seconds
-    final dataFuture = loadData();
-    final delayFuture = Future.delayed(const Duration(milliseconds: 1500));
-
-    await Future.wait([dataFuture, delayFuture]);
-
-    if (!mounted) return;
-
-    final auth = ref.read(authProvider);
-
-    setState(() {
-      if (auth.isLoggedIn && auth.token != null) {
-        content = const TabsScreen();
-      } else {
-        // Show public home page (like FoodPanda)
-        content = const PublicHome();
-      }
-    });
   }  
 
-  
+
   @override
   Widget build(BuildContext context) {
     return content;
   }
 }
-
