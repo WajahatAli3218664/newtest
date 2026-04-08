@@ -46,6 +46,7 @@ import 'package:icare/screens/reminder_list.dart';
 import 'package:icare/screens/remove_products.dart';
 import 'package:icare/screens/select_payment_method.dart';
 import 'package:icare/screens/select_test.dart';
+import 'package:icare/screens/landing_page.dart';
 import 'package:icare/screens/select_user_type.dart';
 import 'package:icare/screens/settings.dart';
 import 'package:icare/screens/soap_notes.dart';
@@ -136,8 +137,8 @@ class _AppState extends ConsumerState<App> {
       if (auth.isLoggedIn && auth.token != null) {
         content = const TabsScreen();
       } else {
-        // Skip walkthrough, go directly to role selection
-        content = const SelectUserType();
+        // Show landing page (handles mobile/desktop routing internally)
+        content = const LandingPage();
       }
     });
   }  
