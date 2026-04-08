@@ -4,6 +4,7 @@ import 'package:icare/services/auth_service.dart';
 import 'package:icare/widgets/custom_button.dart';
 import 'package:icare/widgets/custom_text.dart';
 import 'package:icare/utils/theme.dart';
+import 'package:icare/screens/tabs.dart';
 
 class EmailVerificationScreen extends ConsumerStatefulWidget {
   final String email;
@@ -272,6 +273,19 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
               ),
 
               const SizedBox(height: 20),
+
+              // Skip button - temporary until backend implements email verification
+              CustomButton(
+                label: 'Skip for Now',
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (ctx) => const TabsScreen()),
+                  );
+                },
+                bgColor: Colors.grey[600],
+              ),
+
+              const SizedBox(height: 12),
 
               // Back to login
               TextButton(
