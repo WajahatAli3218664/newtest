@@ -9,6 +9,7 @@ import 'package:icare/screens/lab_profile_setup.dart';
 import 'package:icare/screens/pharmacy_profile_setup.dart';
 import 'package:icare/screens/student_profile_setup.dart';
 import 'package:icare/screens/terms_and_conditions.dart';
+import 'package:icare/screens/email_verification_screen.dart';
 import 'package:icare/services/auth_service.dart';
 import 'package:icare/services/user_service.dart';
 import 'package:icare/models/user.dart' as app_user;
@@ -1170,7 +1171,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             _showError('Could not load profile. Please try again.');
           }
         } else {
-          _showError(result['message']?.toString() ?? 'Login failed.');
+          // Check if error is due to unverified email
+          final message = result['message']?.toString() ?? 'Login failed.';
+          if (message.toLowerCase().contains('verify') || message.toLowerCase().contains('email')) {
+            _showError(message);
+            // Optionally navigate to verification screen
+            if (mounted) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (ctx) => EmailVerificationScreen(
+                    email: usernameController.text.trim(),
+                  ),
+                ),
+              );
+            }
+          } else {
+            _showError(message);
+          }
         }
       } else {
         final selectedRole = ref.read(authProvider).userRole;
@@ -1192,32 +1209,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           phoneNumber: phoneController.text.trim(),
         );
         if (result['success'] == true) {
-          final data = result['data'] as Map<String, dynamic>? ?? {};
-          final token = data['token']?.toString() ?? '';
-          if (token.isEmpty) { _showError('Registration failed: no token received.'); return; }
-          ref.read(authProvider.notifier).setUserToken(token);
-          Map<String, dynamic>? rawUser;
-          final profileResult = await _userService.getUserProfile(token: token);
-          if (profileResult['success'] == true) {
-            rawUser = profileResult['user'] as Map<String, dynamic>?;
-          }
-          rawUser ??= data['user'] as Map<String, dynamic>?;
-          rawUser ??= (data['email'] != null ? data : null);
-          if (rawUser != null && rawUser['email'] != null && mounted) {
-            final user = app_user.User.fromJson(rawUser);
-            ref.read(authProvider.notifier).setUser(user);
-            final role = user.role.toLowerCase();
-            if (role == 'laboratory' || role == 'lab') {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const LabProfileSetup()));
-            } else if (role == 'pharmacy') {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const PharmacyProfileSetup()));
-            } else if (role == 'student') {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const StudentProfileSetup()));
-            } else {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => const TabsScreen()));
-            }
-          } else {
-            _showError('Could not load profile. Please try logging in.');
+          // Show success message and navigate to verification screen
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(result['message'] ?? 'Registration successful! Please verify your email.'),
+                backgroundColor: Colors.green,
+                duration: const Duration(seconds: 3),
+              ),
+            );
+
+            // Navigate to email verification screen
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (ctx) => EmailVerificationScreen(
+                  email: emailController.text.trim(),
+                ),
+              ),
+            );
           }
         } else {
           _showError(result['message']?.toString() ?? 'Registration failed.');

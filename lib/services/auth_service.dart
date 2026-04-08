@@ -195,3 +195,58 @@ class AuthService {
     }
   }
 }
+
+  // Email verification
+  Future<Map<String, dynamic>> verifyEmail(String token) async {
+    try {
+      final response = await _apiService.post(
+        '${ApiConfig.baseUrl}/auth/verify-email',
+        {'token': token},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        return {
+          'success': data['success'] ?? true,
+          'message': data['message'] ?? 'Email verified successfully',
+          'data': data['user'],
+        };
+      }
+
+      return {
+        'success': false,
+        'message': (response.data as Map?)?['message'] ?? 'Verification failed',
+      };
+    } on DioException catch (e) {
+      return {'success': false, 'message': _friendlyError(e)};
+    } catch (e) {
+      return {'success': false, 'message': 'Error: ${e.toString()}'};
+    }
+  }
+
+  // Resend verification email
+  Future<Map<String, dynamic>> resendVerificationEmail(String email) async {
+    try {
+      final response = await _apiService.post(
+        '${ApiConfig.baseUrl}/auth/resend-verification',
+        {'email': email},
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data as Map<String, dynamic>;
+        return {
+          'success': data['success'] ?? true,
+          'message': data['message'] ?? 'Verification email sent',
+        };
+      }
+
+      return {
+        'success': false,
+        'message': (response.data as Map?)?['message'] ?? 'Failed to send email',
+      };
+    } on DioException catch (e) {
+      return {'success': false, 'message': _friendlyError(e)};
+    } catch (e) {
+      return {'success': false, 'message': 'Error: ${e.toString()}'};
+    }
+  }
