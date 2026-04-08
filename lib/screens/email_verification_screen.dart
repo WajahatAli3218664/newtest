@@ -243,9 +243,9 @@ class _EmailVerificationScreenState extends ConsumerState<EmailVerificationScree
 
               // Verify button
               CustomButton(
-                text: _isLoading ? 'Verifying...' : 'Verify Email',
+                label: _isLoading ? 'Verifying...' : 'Verify Email',
                 onPressed: _isLoading ? null : _verifyEmail,
-                backgroundColor: AppColors.primaryColor,
+                bgColor: AppColors.primaryColor,
               ),
 
               const SizedBox(height: 20),
