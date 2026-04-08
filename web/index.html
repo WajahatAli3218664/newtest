@@ -41,79 +41,9 @@
       padding: 0;
       background-color: #ffffff;
     }
-
-    #splash-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background-color: #ffffff;
-      z-index: 9999;
-    }
-
-    #splash-screen img {
-      max-width: 800px;
-      max-height: 600px;
-      width: 70%;
-      height: auto;
-      object-fit: contain;
-    }
-
-    #splash-screen .loader {
-      margin-top: 30px;
-      width: 50px;
-      height: 50px;
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #0B2D6E;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @media (max-width: 768px) {
-      #splash-screen img {
-        max-width: 90%;
-        max-height: 400px;
-      }
-    }
-
-    @media (min-width: 1200px) {
-      #splash-screen img {
-        max-width: 900px;
-        max-height: 700px;
-        width: 60%;
-      }
-    }
   </style>
 </head>
 <body>
-  <div id="splash-screen">
-    <img src="splash.jpg" alt="iCare Logo">
-    <div class="loader"></div>
-  </div>
-
-  <script>
-    window.addEventListener('flutter-first-frame', function() {
-      var splash = document.getElementById('splash-screen');
-      if (splash) {
-        splash.style.transition = 'opacity 0.5s';
-        splash.style.opacity = '0';
-        setTimeout(function() {
-          splash.remove();
-        }, 500);
-      }
-    });
-  </script>
-
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
