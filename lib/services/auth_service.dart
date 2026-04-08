@@ -194,7 +194,6 @@ class AuthService {
       return {'success': false, 'message': 'Unexpected error. Please try again.'};
     }
   }
-}
 
   // Email verification
   Future<Map<String, dynamic>> verifyEmail(String token) async {
@@ -250,3 +249,4 @@ class AuthService {
       return {'success': false, 'message': 'Error: ${e.toString()}'};
     }
   }
+}

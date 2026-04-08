@@ -327,7 +327,7 @@ class ChronicCarePackage {
     );
   }
 
-  static ChronicCarePackage getHeartCarePack age() {
+  static ChronicCarePackage getHeartCarePackage() {
     return ChronicCarePackage(
       id: 'chronic_heart',
       name: 'Heart Health Package',

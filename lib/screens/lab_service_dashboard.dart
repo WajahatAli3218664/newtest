@@ -779,8 +779,8 @@ class _LabServiceDashboardState extends ConsumerState<LabServiceDashboard>
       final workflowService = HealthcareWorkflowService();
       final success = await workflowService.handleLabReportUpload(
         request.id,
-        result['reportUrl'],
-        result['reportNotes'],
+        result['reportUrl'] ?? '',
+        result['reportNotes'] ?? '',
       );
 
       if (success) {

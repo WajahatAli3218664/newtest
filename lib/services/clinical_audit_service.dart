@@ -75,16 +75,16 @@ class ClinicalAuditService {
 
     // History section (40 points)
     maxScore += 40;
-    if (consultation.history.chiefComplaint.isNotEmpty) score += 10;
-    if (consultation.history.historyOfPresentIllness.isNotEmpty) score += 10;
-    if (consultation.history.pastMedicalHistory.isNotEmpty) score += 10;
-    if (consultation.history.currentMedications.isNotEmpty) score += 10;
+    if (consultation.history?.chiefComplaint.isNotEmpty ?? false) score += 10;
+    if (consultation.history?.historyOfPresentIllness.isNotEmpty ?? false) score += 10;
+    if (consultation.history?.pastMedicalHistory.isNotEmpty ?? false) score += 10;
+    if (consultation.history?.medications.isNotEmpty ?? false) score += 10;
 
     // Examination section (30 points)
     maxScore += 30;
     if (consultation.examination != null) {
       if (consultation.examination!.vitalSigns != null) score += 15;
-      if (consultation.examination!.physicalExamFindings.isNotEmpty) score += 15;
+      if (consultation.examination!.notes.isNotEmpty) score += 15;
     }
 
     // Diagnosis section (20 points)
@@ -96,10 +96,10 @@ class ClinicalAuditService {
 
     // Treatment plan section (10 points)
     maxScore += 10;
-    if (consultation.treatmentPlan != null) {
-      if (consultation.treatmentPlan!.prescriptions.isNotEmpty ||
-          consultation.treatmentPlan!.labTests.isNotEmpty ||
-          consultation.treatmentPlan!.healthProgramIds.isNotEmpty) {
+    if (consultation.plan != null) {
+      if (consultation.plan!.prescriptionIds.isNotEmpty ||
+          consultation.plan!.labTestRequestIds.isNotEmpty ||
+          consultation.plan!.healthProgramIds.isNotEmpty) {
         score += 10;
       }
     }
@@ -123,7 +123,7 @@ class ClinicalAuditService {
     }
 
     // Check if examination findings support diagnosis
-    if (consultation.examination == null || consultation.examination!.physicalExamFindings.isEmpty) {
+    if (consultation.examination == null || consultation.examination!.notes.isEmpty) {
       score -= 20;
     }
 
@@ -140,22 +140,19 @@ class ClinicalAuditService {
     int score = 100;
 
     for (var prescription in prescriptions) {
-      // Check if prescription has proper documentation
-      if (prescription.doctorNotes.isEmpty) score -= 10;
-
-      // Check for drug allergies
-      if (consultation.history.allergies.isNotEmpty) {
-        for (var medicine in prescription.medicines) {
-          // In real implementation, check against allergy database
-          // For now, just flag if patient has allergies
-          score -= 5;
-        }
-      }
-
       // Check for proper dosage instructions
       for (var medicine in prescription.medicines) {
         if (medicine.dosage.isEmpty || medicine.frequency.isEmpty) {
           score -= 15;
+        }
+      }
+
+      // Check for drug allergies
+      if (consultation.history?.allergies.isNotEmpty ?? false) {
+        for (var medicine in prescription.medicines) {
+          // In real implementation, check against allergy database
+          // For now, just flag if patient has allergies
+          score -= 5;
         }
       }
     }
@@ -173,7 +170,7 @@ class ClinicalAuditService {
       final diagnosisLower = consultation.diagnosis!.primaryDiagnosis.toLowerCase();
 
       if (chronicConditions.any((c) => diagnosisLower.contains(c))) {
-        if (consultation.treatmentPlan?.followUpInstructions.isEmpty ?? true) {
+        if (consultation.plan?.followUpInstructions.isEmpty ?? true) {
           score -= 30;
         }
       }
@@ -181,7 +178,7 @@ class ClinicalAuditService {
 
     // Check if lab tests have proper follow-up instructions
     if (labTests != null && labTests.isNotEmpty) {
-      if (consultation.treatmentPlan?.followUpInstructions.isEmpty ?? true) {
+      if (consultation.plan?.followUpInstructions.isEmpty ?? true) {
         score -= 20;
       }
     }
@@ -198,7 +195,7 @@ class ClinicalAuditService {
     List<QualityFlag> flags = [];
 
     // Check for incomplete documentation
-    if (consultation.history.chiefComplaint.isEmpty) {
+    if (consultation.history?.chiefComplaint.isEmpty ?? true) {
       flags.add(QualityFlag(
         type: QualityFlagType.incompleteDocumentation,
         description: 'Missing chief complaint',
@@ -229,30 +226,19 @@ class ClinicalAuditService {
 
     // Check for prescriptions without proper documentation
     if (prescriptions != null && prescriptions.isNotEmpty) {
-      for (var prescription in prescriptions) {
-        if (prescription.doctorNotes.isEmpty) {
-          flags.add(QualityFlag(
-            type: QualityFlagType.inappropriatePrescription,
-            description: 'Prescription without clinical justification',
-            severity: QualityFlagSeverity.medium,
-            flaggedAt: DateTime.now(),
-          ));
-        }
-
-        // Check for potential drug interactions with current medications
-        if (consultation.history.currentMedications.isNotEmpty) {
-          flags.add(QualityFlag(
-            type: QualityFlagType.drugInteraction,
-            description: 'Patient on multiple medications - check for interactions',
-            severity: QualityFlagSeverity.medium,
-            flaggedAt: DateTime.now(),
-          ));
-        }
+      // Check for potential drug interactions with current medications
+      if (consultation.history?.medications.isNotEmpty ?? false) {
+        flags.add(QualityFlag(
+          type: QualityFlagType.drugInteraction,
+          description: 'Patient on multiple medications - check for interactions',
+          severity: QualityFlagSeverity.medium,
+          flaggedAt: DateTime.now(),
+        ));
       }
     }
 
     // Check for missing follow-up plan
-    if (consultation.treatmentPlan?.followUpInstructions.isEmpty ?? true) {
+    if (consultation.plan?.followUpInstructions.isEmpty ?? true) {
       if (labTests != null && labTests.isNotEmpty) {
         flags.add(QualityFlag(
           type: QualityFlagType.missingFollowUp,
